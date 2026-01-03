@@ -20,14 +20,32 @@ namespace API.Infra
                 ? typeof(T).Name.ToLowerInvariant()
                 : collectionName;
 
-
             //_collection = database.GetCollection<T>(typeof(T).Name.ToLower()); // pegando o nome da collection
             _collection = database.GetCollection<T>(name);
         }
 
-        public List<T> Get()
+        //public Result<T> Get(int page, int qtd)
+        //{
+        //    return _collection.Find<T>(news => news.Deleted == false).ToList();
+        //}
+
+        public Result<T> Get(int page, int qtd)
         {
-            return _collection.Find<T>(news => news.Deleted == false).ToList();
+            var result = new Result<T>();
+            result.Page = page;
+            result.Qtd = qtd;
+            var filter = Builders<T>.Filter.Eq(news => news.Deleted, false);
+
+            result.Data = _collection.Find(filter)
+                                     .SortByDescending(entity => entity.PublishDate)
+                                     .Skip((page - 1) * qtd)
+                                     .Limit(qtd)
+                                     .ToList();
+
+            result.Total = _collection.CountDocuments(filter);
+            result.TotalPages = (long)Math.Ceiling((double)result.Total / qtd);
+
+            return result;
         }
 
         public T GetBySlug(string slug)

@@ -1,3 +1,4 @@
+using API.Entities;
 using API.Entities.ViewModels;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<NewsViewModel>> Get() => _newsService.Get();
+        public ActionResult<Result<NewsViewModel>> Get(int page, int qtd) => _newsService.Get(page, qtd);
 
         [HttpGet("{id:length(24)}", Name = "GetNews")]
         public ActionResult<NewsViewModel> Get(string id)

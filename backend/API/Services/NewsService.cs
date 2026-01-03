@@ -17,9 +17,9 @@ namespace API.Services
             _newsRepository = newsRepository;
         }
 
-        public List<NewsViewModel> Get()
+        public Result<NewsViewModel> Get(int page, int qtd)
         {
-            return _mapper.Map<List<NewsViewModel>>(_newsRepository.Get().ToList());
+            return _mapper.Map<Result<NewsViewModel>>(_newsRepository.Get(page, qtd));
         }
 
         [HttpGet("{id:length(24)}", Name = "GetNews")]

@@ -1,3 +1,4 @@
+using API.Entities;
 using API.Entities.ViewModels;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -6,21 +7,21 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class NewsExternalTestController : ControllerBase
+    public class NewsExternalController : ControllerBase
     {
         private readonly ILogger<NewsController> _logger;
         private readonly NewsService _newsService;
 
-        public NewsExternalTestController(ILogger<NewsController> logger, NewsService newsService)
+        public NewsExternalController(ILogger<NewsController> logger, NewsService newsService)
         {
             _logger = logger;
             _newsService = newsService;
         }
 
-        //[HttpGet]
-        //public ActionResult<List<NewsViewModel>> Get() => _newsService.Get();
-
         [HttpGet]
+        public ActionResult<Result<NewsViewModel>> Get(int page, int qtd) => _newsService.Get(page, qtd);
+
+        [HttpGet("{slug}")]
         public ActionResult<NewsViewModel> GetBySlug(string slug)
         {
             var news = _newsService.GetBySlug(slug);

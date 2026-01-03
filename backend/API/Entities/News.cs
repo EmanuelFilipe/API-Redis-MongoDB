@@ -35,11 +35,6 @@ namespace API.Entities
         [BsonElement("img")]
         public string Img { get; private set; } = string.Empty;
 
-        [BsonElement("publishDate")]
-        public DateTime PublishDate { get; private set; } 
-
-        [BsonElement("active")]
-        public Status Status { get; private set; }
 
         public Status ChangeStatus(Status status)
         {

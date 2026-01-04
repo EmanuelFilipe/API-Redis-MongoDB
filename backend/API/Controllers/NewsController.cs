@@ -1,10 +1,12 @@
 using API.Entities;
 using API.Entities.ViewModels;
 using API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class NewsController : ControllerBase
@@ -18,7 +20,7 @@ namespace API.Controllers
             _newsService = newsService;
         }
 
-        [HttpGet]
+        [HttpGet("{page}/{qtd}")]
         public ActionResult<Result<NewsViewModel>> Get(int page, int qtd) => _newsService.Get(page, qtd);
 
         [HttpGet("{id:length(24)}", Name = "GetNews")]

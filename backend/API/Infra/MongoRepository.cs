@@ -43,7 +43,10 @@ namespace API.Infra
                                      .ToList();
 
             result.Total = _collection.CountDocuments(filter);
-            result.TotalPages = (long)Math.Ceiling((double)result.Total / qtd);
+            result.TotalPages = result.Total / qtd;
+
+            //long resultCalc = (long)Math.Ceiling((double)result.Total / qtd);
+            //result.TotalPages = resultCalc < 0 ? 0 : resultCalc;
 
             return result;
         }

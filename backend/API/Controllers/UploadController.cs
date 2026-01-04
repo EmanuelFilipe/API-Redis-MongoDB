@@ -1,6 +1,4 @@
 ﻿using API.Services;
-using ImageProcessor;
-using ImageProcessor.Plugins.WebP.Imaging.Formats;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -10,44 +8,35 @@ namespace API.Controllers
     public class UploadController : ControllerBase
     {
         private readonly ILogger<NewsController> _logger;
+        private readonly UploadService _uploadService;
 
-        public UploadController(ILogger<NewsController> logger)
+        public UploadController(ILogger<NewsController> logger, UploadService uploadService)
         {
             _logger = logger;
+            _uploadService = uploadService;
         }
 
         [HttpPost]
-        public IActionResult Post(IFormFile image)
+        public IActionResult Post(IFormFile file)
         {
             try
             {
                 // validação caso não tenha sido enviado nenhuma imagem
-                if (image is null || image.Length == 0) return null;
+                if (file is null || file.Length == 0) return null;
 
                 // salvando a imagem na pasta Imagens dentro do projeto
-                using (var stream = new FileStream(Path.Combine("Imagens", image.FileName), FileMode.Create))
-                {
-                    image.CopyTo(stream);
-                }
-
-                // compreensao de imagem
-                //var webpNameImage = Guid.NewGuid().ToString() + ".webp";
-
-                //using (var webPFileStream = new FileStream(Path.Combine("Imagens", webpNameImage), FileMode.Create))
+                //using (var stream = new FileStream(Path.Combine("Imagens", image.FileName), FileMode.Create))
                 //{
-                //    using (ImageFactory imageFactory = new ImageFactory(preserveExifData: false))
-                //    {
-                //        imageFactory?.Load(image.OpenReadStream())
-                //            .Format(new WebPFormat())
-                //            .Quality(100)
-                //            .Save(webPFileStream);
-                //    }
+                //    image.CopyTo(stream);
                 //}
+
+                string urlFile = _uploadService.UploadFile(file);
+
                 //urlImagem = $"http://localhost:5055/imgs/{webpNameImage}"
                 return Ok(new
                 {
-                    mensagem = "Imagem salva com sucesso!",
-                    urlImagem = $"http://localhost:5055/imgs/{image.FileName}"
+                    mensagem = "Arquivo salvo com sucesso!",
+                    urlImagem = urlFile
                 });
 
             }

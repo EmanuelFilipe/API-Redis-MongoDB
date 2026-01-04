@@ -9,10 +9,10 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class VideoExternalController : ControllerBase
     {
-        private readonly ILogger<VideoController> _logger;
+        private readonly ILogger<VideoExternalController> _logger;
         private readonly VideoService _videoService;
 
-        public VideoExternalController(ILogger<VideoController> logger, VideoService videoService)
+        public VideoExternalController(ILogger<VideoExternalController> logger, VideoService videoService)
         {
             _logger = logger;
             _videoService = videoService;

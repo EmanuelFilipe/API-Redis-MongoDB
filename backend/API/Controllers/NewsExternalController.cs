@@ -9,16 +9,16 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class NewsExternalController : ControllerBase
     {
-        private readonly ILogger<NewsController> _logger;
+        private readonly ILogger<NewsExternalController> _logger;
         private readonly NewsService _newsService;
 
-        public NewsExternalController(ILogger<NewsController> logger, NewsService newsService)
+        public NewsExternalController(ILogger<NewsExternalController> logger, NewsService newsService)
         {
             _logger = logger;
             _newsService = newsService;
         }
 
-        [HttpGet]
+        [HttpGet("{page:int}/{qtd:int}")]
         public ActionResult<Result<NewsViewModel>> Get(int page, int qtd) => _newsService.Get(page, qtd);
 
         [HttpGet("{slug}")]

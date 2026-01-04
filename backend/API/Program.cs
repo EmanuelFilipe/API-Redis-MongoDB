@@ -1,8 +1,12 @@
 using API.Infra;
 using API.Mappers;
 using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +18,27 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "API", Version = "v1" });
+    //c.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+    //{
+    //    Type = SecuritySchemeType.Http,
+    //    Scheme = "bearer",
+    //    BearerFormat = "JWT",
+    //    Description = "JWT Authorization header using the Bearer scheme."
+    //});
+    //c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    //{
+    //    {
+    //        new OpenApiSecurityScheme
+    //        {
+    //            Reference = new OpenApiReference
+    //            {
+    //                Type = ReferenceType.SecurityScheme,
+    //                Id = "bearer"
+    //            }
+    //        },
+    //        new string[] {}
+    //    }
+    //});
 });
 
 #region [Database]
@@ -28,6 +53,8 @@ builder.Services.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOp
 builder.Services.AddSingleton(typeof(IMongoRepository<>), typeof(MongoRepository<>));
 builder.Services.AddSingleton<NewsService>();
 builder.Services.AddSingleton<VideoService>();
+builder.Services.AddTransient<UploadService>();
+builder.Services.AddTransient<GalleryService>();
 
 #endregion
 
@@ -42,6 +69,23 @@ builder.Services.AddAutoMapper(typeof(EntityToViewModelMapping), typeof(ViewMode
 builder.Services.AddCors();
 
 #endregion
+
+//#region [JWT]
+
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddJwtBearer(options =>
+//    {
+//        options.TokenValidationParameters = new TokenValidationParameters
+//        {
+//            ValidateIssuerSigningKey = true,
+//            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII
+//                .GetBytes(builder.Configuration.GetSection("tokenManagement:secret").Value!)),
+//            ValidateIssuer = false,
+//            ValidateAudience = false
+//        };
+//    });
+
+//#endregion
 
 // torna o nome dos endpoints no swagger em minúsculo
 builder.Services.AddRouting(opt => opt.LowercaseUrls = true);
@@ -76,12 +120,13 @@ app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
-        Path.Combine(builder.Environment.ContentRootPath, "Imagens")),
-    RequestPath = "/imgs"
+        Path.Combine(builder.Environment.ContentRootPath, "Medias")),
+    RequestPath = "/medias"
 });
 
 #endregion
 
+//app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

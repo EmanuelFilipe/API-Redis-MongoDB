@@ -10,6 +10,7 @@ namespace API.Mappers
         {
             CreateMap<NewsViewModel, News>();
             CreateMap<VideoViewModel, Video>();
+            CreateMap<GalleryViewModel, Gallery>();
         }
     }
 }

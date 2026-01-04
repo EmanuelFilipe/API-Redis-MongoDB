@@ -27,3 +27,10 @@ docker stop mongodb
 - **MongoDB.Driver 2.13.2**  
   É o driver oficial do MongoDB para .NET. Permite conectar à base de dados, executar operações de CRUD (Create, Read, Update, Delete), consultas, agregações e gerenciar coleções e bancos diretamente a partir do código C#.
 - Com Mongo não é necessário utilização de entityframework para gerar migrations.
+
+# Helth Checks for MongoDB - versao de acordo com o seu MongoDB instalado
+AspNetCore.HealthChecks.MongoDb by nugget
+
+AspNetCore.HealthChecks.UI
+AspNetCore.HealthChecks.UI.Client
+AspNetCore.HealthChecks.UI.InMemory.Storage 'grava todas as validações em memória'

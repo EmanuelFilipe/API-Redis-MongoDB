@@ -4,6 +4,7 @@ using API.Services;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -50,9 +51,19 @@ builder.Services.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOp
 
 #endregion
 
+#region [Cache]
+
+builder.Services.AddDistributedRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetSection("RedisSettings:ConnectionString").Value;
+});
+#endregion
+
 #region [HealthCheck]
 
 builder.Services.AddHealthChecks()
+                .AddRedis(builder.Configuration.GetSection("RedisSettings:ConnectionString").Value!,
+                    name: "redis", tags: new string[] { "db", "data" })
                 .AddMongoDb(builder.Configuration.GetSection("DatabaseSettings:ConnectionString").Value + "/" + builder.Configuration.GetSection("DatabaseSettings:DatabaseName").Value,
                     name: "mongodb", tags: new string[] { "db", "data" });
 
@@ -73,6 +84,13 @@ builder.Services.AddSingleton<NewsService>();
 builder.Services.AddSingleton<VideoService>();
 builder.Services.AddTransient<UploadService>();
 builder.Services.AddTransient<GalleryService>();
+
+// Cache memory
+// builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
+// builder.Services.AddSingleton<ICacheService, CacheMemoryService>();
+
+// Redis
+builder.Services.AddSingleton<ICacheService, CacheRedisService>();
 
 #endregion
 
